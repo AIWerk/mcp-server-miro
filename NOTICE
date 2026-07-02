@@ -1,0 +1,7 @@
+@aiwerk/mcp-server-miro
+Copyright 2026 AIWerk (Attila Bergsmann)
+
+This product is a fork of mcp-miro (https://github.com/k-jarzyna/mcp-miro),
+Copyright Kamil Jarzyna, licensed under the Apache License, Version 2.0.
+Changes: package rename, @modelcontextprotocol/sdk upgrade to 1.29.x
+(constructor API migration), dependency refresh, smoke test, packaging metadata.

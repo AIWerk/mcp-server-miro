@@ -1,7 +1,8 @@
-# MCP Miro Server
+# @aiwerk/mcp-server-miro
 
-[![Trust Score](https://archestra.ai/mcp-catalog/api/badge/quality/k-jarzyna/mcp-miro)](https://archestra.ai/mcp-catalog/k-jarzyna__mcp-miro)
-[![smithery badge](https://smithery.ai/badge/@k-jarzyna/mcp-miro)](https://smithery.ai/server/@k-jarzyna/mcp-miro)
+Miro MCP server with 97 tools (boards, items, tags, groups, members, webhooks).
+
+Maintained [AIWerk](https://github.com/AIWerk) fork of [k-jarzyna/mcp-miro](https://github.com/k-jarzyna/mcp-miro) (Apache-2.0). Fork motivation: the upstream package was last released in August 2025 and carries known high-severity advisories in its transitive `@modelcontextprotocol/sdk` dependency. This fork tracks the current MCP SDK (`npm audit`: 0 vulnerabilities) and is published as `@aiwerk/mcp-server-miro`.
 
 Model Context Protocol (MCP) server integrating with the [Miro](https://miro.com/) platform. It enables AI assistants (like Claude) to access Miro boards and manage their content through a standardized interface.
 
@@ -48,7 +49,7 @@ Model Context Protocol (MCP) server integrating with the [Miro](https://miro.com
          "command":"npx",
          "args":[
             "-y",
-            "@k-jarzyna/mcp-miro"
+            "@aiwerk/mcp-server-miro"
          ],
          "env":{
             "MIRO_ACCESS_TOKEN":"your_miro_access_token"

@@ -1,24 +1,27 @@
 {
-  "name": "@k-jarzyna/mcp-miro",
-  "version": "1.0.9",
+  "name": "@aiwerk/mcp-server-miro",
+  "version": "1.1.0",
   "main": "build/index.js",
   "type": "module",
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf build/",
     "prebuild": "npm run clean",
-    "postbuild": "chmod +x build/index.js"
+    "postbuild": "chmod +x build/index.js",
+    "prepublishOnly": "bash $HOME/agent-memory/commons/scripts/prepublish-safety.sh && npm run build",
+    "test": "node test/smoke.test.mjs"
   },
   "bin": {
+    "aiwerk-mcp-server-miro": "build/index.js",
     "mcp-miro": "build/index.js"
   },
   "keywords": [],
   "author": "Konrad Jarzyna",
   "license": "Apache-2.0",
-  "description": "Miro integration for Model Context Protocol",
+  "description": "Miro MCP server with 97 tools (boards, items, tags, groups, members, webhooks). Maintained AIWerk fork of k-jarzyna/mcp-miro with current MCP SDK.",
   "dependencies": {
     "@mirohq/miro-api": "^2.2.4",
-    "@modelcontextprotocol/sdk": "^1.8.0",
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "dotenv": "^16.4.7",
     "zod": "^3.24.2"
   },
@@ -28,10 +31,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/k-jarzyna/mcp-miro"
+    "url": "git+https://github.com/AIWerk/mcp-server-miro.git"
   },
   "files": [
     "build"
   ],
-  "homepage": "https://github.com/k-jarzyna/mcp-miro"
+  "homepage": "https://github.com/AIWerk/mcp-server-miro#readme",
+  "bugs": {
+    "url": "https://github.com/AIWerk/mcp-server-miro/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  }
 }
