@@ -16,7 +16,7 @@
     "mcp-miro": "build/index.js"
   },
   "keywords": [],
-  "author": "Konrad Jarzyna",
+  "author": "AIWerk",
   "license": "Apache-2.0",
   "description": "Miro MCP server with 97 tools (boards, items, tags, groups, members, webhooks). Maintained AIWerk fork of k-jarzyna/mcp-miro with current MCP SDK.",
   "dependencies": {
@@ -42,5 +42,8 @@
   },
   "engines": {
     "node": ">=18"
-  }
+  },
+  "contributors": [
+    "Konrad Jarzyna (original author, https://github.com/k-jarzyna/mcp-miro)"
+  ]
 }
