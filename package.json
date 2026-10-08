@@ -45,5 +45,8 @@
   },
   "contributors": [
     "Konrad Jarzyna (original author, https://github.com/k-jarzyna/mcp-miro)"
-  ]
+  ],
+  "publishConfig": {
+    "access": "restricted"
+  }
 }

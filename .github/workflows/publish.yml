@@ -1,0 +1,74 @@
+# Publish to npm with trusted publishing (OIDC): no npm token anywhere.
+#
+# The package is PRIVATE on npm (AIWerk customers reach it through the hosted
+# bridge only). Every publish states --access restricted, and the guard step
+# refuses to run if package.json says anything else: a publish with
+# --access public would silently make the package public again.
+#
+# Inert until npm is told to trust this workflow. One-time setup per package,
+# by the package owner (needs a 2FA login):
+#   npx npm@11 trust github @aiwerk/mcp-server-miro --file publish.yml \
+#     --repo AIWerk/mcp-server-miro --env npm-publish
+# Without that step the publish job fails with an auth error and publishes
+# nothing.
+#
+# Runs when a GitHub release is published. The release tag must match
+# package.json ("v0.2.4" for version 0.2.4), so a release can never publish a
+# version other than the one it is named after. Also runnable by hand
+# (Actions -> Publish -> Run workflow). npm refuses a version it already
+# has, so a stray manual run cannot overwrite anything.
+
+name: Publish
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write   # the OIDC token npm exchanges for a short-lived publish credential
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: npm-publish
+    steps:
+      - uses: actions/checkout@v5
+      # No registry-url here: with it, setup-node writes an .npmrc holding a
+      # placeholder NODE_AUTH_TOKEN, npm sends that instead of using OIDC, and
+      # the registry answers 404. The default registry is npmjs.org anyway.
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      # Trusted publishing needs npm 11.5.1 or later; Node 22 ships an older npm.
+      - run: npm install -g npm@^11.5.1
+      - name: Guard - right package, private access, tag matches
+        run: |
+          name="$(node -p "require('./package.json').name")"
+          access="$(node -p "(require('./package.json').publishConfig||{}).access||''")"
+          if [ "$name" != "@aiwerk/${GITHUB_REPOSITORY#*/}" ]; then
+            echo "package.json name $name does not belong to $GITHUB_REPOSITORY" >&2
+            exit 1
+          fi
+          if [ "$access" != "restricted" ]; then
+            echo "publishConfig.access must be \"restricted\", found \"$access\"" >&2
+            exit 1
+          fi
+          if [ "$GITHUB_EVENT_NAME" = "release" ]; then
+            pkg="v$(node -p "require('./package.json').version")"
+            if [ "$pkg" != "$GITHUB_REF_NAME" ]; then
+              echo "Release tag $GITHUB_REF_NAME does not match package.json $pkg" >&2
+              exit 1
+            fi
+          fi
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+      # --ignore-scripts: build and tests ran above, and prepublishOnly calls a
+      # safety script that exists only on the maintainer's machine. The guard
+      # step covers what that script checks. Verbose, so a failed OIDC exchange
+      # says why (a trusted publisher mismatch otherwise surfaces only as a
+      # bare ENEEDAUTH).
+      - run: npm publish --access restricted --ignore-scripts --loglevel verbose
